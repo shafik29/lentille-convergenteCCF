@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation optique - Lentille convergente</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHVycGxlJTIwYmFja2dyb3VuZHxlbnwwfHwwfHx8MA%3D%3D');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #000;
+      text-align: center;
+    }
+    .canvas-wrapper {
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin: 30px auto;
+      width: fit-content;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin-top: 20px;
+      cursor: crosshair;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+    }
+    .protocol {
+      background-color: #ffffffcc;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-4">🔬 Animation - Lentille convergente</h1>
+    <div class="protocol">
+      <h4>📋 Protocole :</h4>
+      <ul>
+        <li>Déplace le point A (objet) à l'aide du curseur pour en modifier la position horizontale.</li>
+        <li>Modifie la position du foyer F avec le second curseur.</li>
+        <li>Utilise le troisième curseur pour ajuster la taille de l'objet (point B).</li>
+        <li>Sélectionne l'outil "segment" ou "demi-droite" pour tracer un rayon lumineux entre deux points du schéma.</li>
+        <li>Pour chaque tracé, clique deux fois sur le canevas pour définir les points de départ et d’arrivée.</li>
+        <li>Les axes horizontal (optique) et vertical (lentille) sont gradués pour faciliter la construction.</li>
+      </ul>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center flex-wrap gap-3 mb-3">
+      <div>
+        <label for="positionA" class="form-label">Position de A (mm) :</label>
+        <input type="range" id="positionA" min="100" max="450" value="150" class="form-range">
+        <span id="valA" class="fw-bold">150 mm</span>
+      </div>
+      <div>
+        <label for="positionF" class="form-label">Position de F (mm) :</label>
+        <input type="range" id="positionF" min="50" max="200" value="100" class="form-range">
+        <span id="valF" class="fw-bold">100 mm</span>
+      </div>
+      <div>
+        <label for="heightB" class="form-label">Hauteur de l'objet (cm) :</label>
+        <input type="range" id="heightB" min="20" max="200" value="100" class="form-range">
+        <span id="heightValue" class="fw-bold">5 cm</span>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <button class="btn btn-outline-primary me-2" onclick="setMode('segment')">✏️ Tracer un segment</button>
+      <button class="btn btn-outline-success" onclick="setMode('ray')">➡️ Tracer une demi-droite</button>
+      <button class="btn btn-danger ms-3" onclick="clearCanvas()">Effacer les tracés</button>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="opticsCanvas" style="background-color: #f9f9f9;" width="1000" height="500"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('opticsCanvas');
+    const ctx = canvas.getContext('2d');
+    const positionSlider = document.getElementById('positionA');
+    const focalSlider = document.getElementById('positionF');
+    const heightSlider = document.getElementById('heightB');
+    const heightValue = document.getElementById('heightValue');
+    const valA = document.getElementById('valA');
+    const valF = document.getElementById('valF');
+
+    let lines = [];
+    let mode = 'segment';
+    let point1 = null;
+
+    function setMode(newMode) {
+      mode = newMode;
+      point1 = null;
+    }
+
+    function drawScene(xA, fDist, height) {
+      const gridSpacing = 25;
+      ctx.fillStyle = '#f9f9f9';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Grille de fond
+      ctx.strokeStyle = '#dddddd';
+      ctx.lineWidth = 0.5;
+      for (let x = 0; x <= canvas.width; x += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = '#e0e0e0';
+      for (let x = 0; x < canvas.width; x += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      // Fond clair et quadrillage
+      ctx.fillStyle = '#f9f9f9';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 0.5;
+      for (let x = 0; x <= canvas.width; x += 25) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += 25) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Dessiner grille de fond
+      ctx.strokeStyle = '#eeeeee';
+      ctx.lineWidth = 0.5;
+      for (let x = 0; x <= canvas.width; x += 25) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += 25) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      const pxPerMm = 2;
+      const O = canvas.width / 2;
+      const F = O - fDist * pxPerMm;
+      const Fp = O + fDist * pxPerMm;
+      const yMid = canvas.height / 2;
+      const A = O - xA * pxPerMm;
+      const B = height;
+
+      // Axes
+      ctx.strokeStyle = 'gray';
+      ctx.beginPath();
+      ctx.moveTo(0, yMid);
+      ctx.lineTo(canvas.width, yMid);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(O, 0);
+      ctx.lineTo(O, canvas.height);
+      ctx.stroke();
+
+      // Graduations
+      ctx.fillStyle = 'black';
+      for (let x = 0; x <= canvas.width; x += 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, yMid - 5);
+        ctx.lineTo(x, yMid + 5);
+        ctx.stroke();
+        ctx.fillText(((x - O) / pxPerMm) + ' mm', x - 15, yMid + 20);
+      }
+      for (let y = 0; y <= canvas.height; y += 50) {
+        ctx.beginPath();
+        ctx.moveTo(O - 5, y);
+        ctx.lineTo(O + 5, y);
+        ctx.stroke();
+        if (y !== yMid) ctx.fillText(((yMid - y) / 20).toFixed(1) + ' cm', O + 10, y + 5);
+      }
+
+      // Points et lentille
+      ctx.strokeStyle = "blue";
+      ctx.beginPath();
+      ctx.moveTo(O, yMid - 100);
+      ctx.lineTo(O, yMid + 100);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(O - 6, yMid - 95);
+      ctx.lineTo(O, yMid - 100);
+      ctx.lineTo(O + 6, yMid - 95);
+      ctx.moveTo(O - 6, yMid + 95);
+      ctx.lineTo(O, yMid + 100);
+      ctx.lineTo(O + 6, yMid + 95);
+      ctx.stroke();
+
+      // Affichage des foyers
+      ctx.fillStyle = 'green';
+      ctx.beginPath();
+      ctx.arc(F, yMid, 4, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillText('F', F - 5, yMid - 10);
+
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(Fp, yMid, 4, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillText("F'", Fp - 5, yMid - 10);
+
+// Corps de la flèche (objet AB)
+ctx.strokeStyle = "orange";
+ctx.beginPath();
+ctx.moveTo(A, yMid);
+ctx.lineTo(A, yMid - B);
+ctx.stroke();
+
+// Tête de flèche remplie
+ctx.fillStyle = "orange";
+ctx.beginPath();
+ctx.moveTo(A - 6, yMid - B + 12); // gauche
+ctx.lineTo(A, yMid - B);          // pointe
+ctx.lineTo(A + 6, yMid - B + 12); // droite
+ctx.closePath();
+ctx.fill();
+
+// Étiquettes
+ctx.fillStyle = "black";
+ctx.fillText("A", A - 5, yMid + 15);
+ctx.fillText("B", A - 5, yMid - B - 15);
+ctx.fillText((B / 20).toFixed(1) + " cm", A + 10, yMid - B / 2);
+
+
+
+      lines.forEach(line => {
+        ctx.beginPath();
+        ctx.moveTo(line.x1, line.y1);
+        ctx.lineTo(line.x2, line.y2);
+        ctx.strokeStyle = line.color;
+        ctx.stroke();
+      });
+    }
+
+    function updateScene() {
+      const xA = parseInt(positionSlider.value);
+      const fDist = parseInt(focalSlider.value);
+      const height = parseInt(heightSlider.value);
+      heightValue.textContent = (height / 20).toFixed(1) + " cm";
+      valA.textContent = xA + " mm";
+      valF.textContent = fDist + " mm";
+      drawScene(xA, fDist, height);
+    }
+
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (!point1) {
+        point1 = { x, y };
+      } else {
+        if (mode === 'segment') {
+          lines.push({ x1: point1.x, y1: point1.y, x2: x, y2: y, color: 'black' });
+        } else if (mode === 'ray') {
+          const dx = x - point1.x;
+          const dy = y - point1.y;
+          const length = 2000;
+          const mag = Math.sqrt(dx * dx + dy * dy);
+          const ux = dx / mag;
+          const uy = dy / mag;
+          lines.push({ x1: point1.x, y1: point1.y, x2: point1.x + ux * length, y2: point1.y + uy * length, color: 'black' });
+        }
+        point1 = null;
+        updateScene();
+      }
+    });
+
+    function clearCanvas() {
+      lines = [];
+      updateScene();
+    }
+
+    positionSlider.addEventListener('input', updateScene);
+    focalSlider.addEventListener('input', updateScene);
+    heightSlider.addEventListener('input', updateScene);
+
+    updateScene();
+  </script>
+</body>
+</html>
