@@ -123,7 +123,7 @@
           <input
             type="range"
             id="positionF"
-            min="50"
+            min="25"
             max="200"
             value="100"
             class="form-range"
@@ -269,6 +269,28 @@ for (let dy = -yMid; dy <= yMid; dy += 50) {
   }
 }
 
+// 🎯 Épaisseur dynamique de la lentille selon la position de F'
+let minWidth = 6;
+let maxWidth = 20;
+let clampedF = Math.max(25, Math.min(200, fDist)); // on borne entre 25 et 200
+let width = minWidth + ((200 - clampedF) / 150) * (maxWidth - minWidth);
+
+// Lentille biconcave fine et adaptative
+ctx.fillStyle = "rgba(135, 206, 250, 0.3)";
+ctx.beginPath();
+ctx.moveTo(O - width, yMid - 100);
+ctx.bezierCurveTo(O - 35, yMid - 50, O - 35, yMid + 50, O - width, yMid + 100);
+ctx.lineTo(O + width, yMid + 100);
+ctx.bezierCurveTo(O + 35, yMid + 50, O + 35, yMid - 50, O + width, yMid - 100);
+ctx.closePath();
+ctx.fill();
+
+// Option : bordure subtile
+ctx.strokeStyle = "rgba(70, 130, 180, 0.4)";
+ctx.lineWidth = 1.2;
+ctx.stroke();
+
+
 
     // Lentille
     ctx.strokeStyle = "blue";
@@ -389,7 +411,7 @@ for (let dy = -yMid; dy <= yMid; dy += 50) {
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 </script>
-<footer style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: white; padding: 20px; margin-top: 40px; border-radius: 15px 15px 0 0; font-family: 'Segoe UI', sans-serif;">
+<footer style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: white; padding: 20px; margin-top: 40px; border-radius: 15px 15px 0 0; font-family: 'Segoe UI', sans-serif; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);">
   <div class="container text-center">
     <p class="mb-1 fw-bold">© 2024 Réalisé par <span style="text-decoration: underline;">M. BEN AHMED</span></p>
     <p class="mb-1 fst-italic">👨‍🏫 Enseignant de Mathématiques et de Sciences Physiques</p>
@@ -397,5 +419,6 @@ for (let dy = -yMid; dy <= yMid; dy += 50) {
     <p class="mb-0 small">🛡️ Sous licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" style="color: #bbdefb;">CC BY-NC-SA 4.0</a> — Partage autorisé avec mention, usage non commercial</p>
   </div>
 </footer>
+
   </body>
 </html>
