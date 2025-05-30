@@ -1,113 +1,171 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Animation optique - Lentille convergente</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      background-image: url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?fm=jpg&q=60&w=3000');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      text-align: center;
-    }
-    .canvas-wrapper {
-      background-color: #fff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      margin: 30px auto;
-      width: 100%;
-      max-width: 1000px;
-    }
-    canvas {
-      width: 100% !important;
-      height: auto !important;
-      border: 1px solid #ccc;
-      cursor: crosshair;
-      background-color: #f9f9f9;
-      border-radius: 10px;
-    }
-    .protocol {
-      background-color: #ffffffcc;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 20px auto;
-      max-width: 900px;
-      text-align: left;
-      color: #1a1a1a; /* 🔹 Couleur du texte ajoutée ici */
-    }
-    .logo-container {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animation optique - Lentille convergente</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+          body {
+            background-image: url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?fm=jpg&q=60&w=3000');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-align: center;
+          }
+          .canvas-wrapper {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 30px auto;
+            width: 100%;
+            max-width: 1000px;
+          }
+          canvas {
+            width: 100% !important;
+            height: auto !important;
+            border: 1px solid #ccc;
+            cursor: crosshair;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+          }
+          .protocol {
+            background-color: #ffffffcc;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 900px;
+            text-align: left;
+            color: #1a1a1a; /* 🔹 Couleur du texte ajoutée ici */
+          }
+          .logo-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+      }
 
-.logo {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #4b0082;
-  background-color: white;
-  padding: 4px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-  </style>
-</head>
-<body>
-  <div class="container-fluid">
-    <div class="logo-container">
-    <img src="https://cdn.worldvectorlogo.com/logos/science-colleges.svg" alt="Logo" class="logo">
-    </div>
-    <h1 class="mt-4">🔬 Animation - Lentille convergente</h1>
-    <div class="protocol">
-      <h4>📋 Protocole :</h4>
-      <ul>
-        <li>Déplace le point A (objet) à l'aide du curseur pour en modifier la position horizontale.</li>
-        <li>Modifie la position du foyer F avec le second curseur.</li>
-        <li>Utilise le troisième curseur pour ajuster la taille de l'objet (point B).</li>
-        <li>Sélectionne l'outil "segment" ou "demi-droite" pour tracer un rayon lumineux entre deux points du schéma.</li>
-        <li>Pour chaque tracé, clique deux fois sur le canevas pour définir les points de départ et d’arrivée.</li>
-        <li>Les axes horizontal (optique) et vertical (lentille) sont gradués pour faciliter la construction.</li>
-      </ul>
-    </div>
-
-    <div class="d-flex flex-wrap justify-content-center gap-4 mb-4">
-      <div>
-        <label for="positionA" class="form-label">Position de l'objet (mm) :</label>
-        <input type="range" id="positionA" min="100" max="450" value="150" class="form-range" />
-        <span id="valA" class="fw-bold">150 mm</span>
+      .logo {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #4b0082;
+        background-color: white;
+        padding: 4px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="logo-container">
+        <img
+          src="https://cdn.worldvectorlogo.com/logos/science-colleges.svg"
+          alt="Logo"
+          class="logo"
+        />
       </div>
-      <div>
-        <label for="positionF" class="form-label">Position de F' (mm) :</label>
-        <input type="range" id="positionF" min="50" max="200" value="100" class="form-range" />
-        <span id="valF" class="fw-bold">100 mm</span>
+      <h1 class="mt-4">🔬 Animation - Lentille convergente</h1>
+      <div class="protocol">
+        <h4>📋 Protocole :</h4>
+        <ul>
+          <li>
+            Déplace le point A (objet) à l'aide du curseur pour en modifier la
+            position horizontale.
+          </li>
+          <li>Modifie la position du foyer F avec le second curseur.</li>
+          <li>
+            Utilise le troisième curseur pour ajuster la taille de l'objet
+            (point B).
+          </li>
+          <li>
+            Sélectionne l'outil "segment" ou "demi-droite" pour tracer un rayon
+            lumineux entre deux points du schéma.
+          </li>
+          <li>
+            Pour chaque tracé, clique deux fois sur le canevas pour définir les
+            points de départ et d’arrivée.
+          </li>
+          <li>
+            Les axes horizontal (optique) et vertical (lentille) sont gradués
+            pour faciliter la construction.
+          </li>
+        </ul>
       </div>
-      <div>
-        <label for="heightB" class="form-label">Hauteur de l'objet (cm) :</label>
-        <input type="range" id="heightB" min="20" max="200" value="100" class="form-range" />
-        <span id="heightValue" class="fw-bold">5 cm</span>
+
+      <div class="d-flex flex-wrap justify-content-center gap-4 mb-4">
+        <div>
+          <label for="positionA" class="form-label"
+            >Position de l'objet (mm) :</label
+          >
+          <input
+            type="range"
+            id="positionA"
+            min="100"
+            max="450"
+            value="150"
+            class="form-range"
+          />
+          <span id="valA" class="fw-bold">150 mm</span>
+        </div>
+        <div>
+          <label for="positionF" class="form-label"
+            >Position de F' (mm) :</label
+          >
+          <input
+            type="range"
+            id="positionF"
+            min="50"
+            max="200"
+            value="100"
+            class="form-range"
+          />
+          <span id="valF" class="fw-bold">100 mm</span>
+        </div>
+        <div>
+          <label for="heightB" class="form-label"
+            >Hauteur de l'objet (cm) :</label
+          >
+          <input
+            type="range"
+            id="heightB"
+            min="20"
+            max="200"
+            value="100"
+            class="form-range"
+          />
+          <span id="heightValue" class="fw-bold">5 cm</span>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <button
+          class="btn btn-outline-primary me-2"
+          onclick="setMode('segment')"
+        >
+          ✏️ Tracer un segment
+        </button>
+        <button class="btn btn-outline-success" onclick="setMode('ray')">
+          ➡️ Tracer une demi-droite
+        </button>
+        <button class="btn btn-danger ms-3" onclick="clearCanvas()">
+          Effacer les tracés
+        </button>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="opticsCanvas"></canvas>
       </div>
     </div>
-
-    <div class="mb-4">
-      <button class="btn btn-outline-primary me-2" onclick="setMode('segment')">✏️ Tracer un segment</button>
-      <button class="btn btn-outline-success" onclick="setMode('ray')">➡️ Tracer une demi-droite</button>
-      <button class="btn btn-danger ms-3" onclick="clearCanvas()">Effacer les tracés</button>
-    </div>
-
-    <div class="canvas-wrapper">
-      <canvas id="opticsCanvas"></canvas>
-    </div>
-  </div>
-  <script>
+ <script>
   const canvas = document.getElementById('opticsCanvas');
   const ctx = canvas.getContext('2d');
   const positionSlider = document.getElementById('positionA');
@@ -121,7 +179,8 @@
   let mode = 'segment';
   let point1 = null;
 
-  let pxPerMm = 2; // valeur par défaut, mise à jour dans resizeCanvas()
+  let pxPerMm = 2;
+  let O = 0; // ✅ Centre de la lentille, défini globalement
 
   function setMode(newMode) {
     mode = newMode;
@@ -132,8 +191,9 @@
     const wrapper = document.querySelector('.canvas-wrapper');
     const width = wrapper.clientWidth;
     canvas.width = width;
-    canvas.height = width / 2; // ratio 2:1
-    pxPerMm = canvas.width / 500; // 500 mm sur la largeur
+    canvas.height = width / 2;
+    pxPerMm = canvas.width / 500;
+    O = canvas.width / 2; // ✅ Calculer O une seule fois ici
     updateScene();
   }
 
@@ -141,7 +201,6 @@
     const gridSpacing = 25;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const O = canvas.width / 2;
     const F = O - fDist * pxPerMm;
     const Fp = O + fDist * pxPerMm;
     const yMid = canvas.height / 2;
@@ -164,34 +223,52 @@
       ctx.stroke();
     }
 
-    // Axes
-    ctx.strokeStyle = 'gray';
-    ctx.beginPath();
-    ctx.moveTo(0, yMid);
-    ctx.lineTo(canvas.width, yMid);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(O, 0);
-    ctx.lineTo(O, canvas.height);
-    ctx.stroke();
+    // Axes optiques
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, yMid); ctx.lineTo(canvas.width, yMid); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(O, 0); ctx.lineTo(O, canvas.height); ctx.stroke();
 
-    // Graduations
-    ctx.fillStyle = 'black';
-    ctx.font = '12px Arial';
-    for (let x = 0; x <= canvas.width; x += 50) {
-      ctx.beginPath();
-      ctx.moveTo(x, yMid - 5);
-      ctx.lineTo(x, yMid + 5);
-      ctx.stroke();
-      ctx.fillText(((x - O) / pxPerMm).toFixed(0) + ' mm', x - 15, yMid + 20);
-    }
-    for (let y = 0; y <= canvas.height; y += 50) {
-      ctx.beginPath();
-      ctx.moveTo(O - 5, y);
-      ctx.lineTo(O + 5, y);
-      ctx.stroke();
-      if (y !== yMid) ctx.fillText(((yMid - y) / 20).toFixed(1) + ' cm', O + 10, y + 5);
-    }
+    // Étiquette "O" au centre optique
+ctx.fillStyle = 'black';
+ctx.font = 'bold 14px Arial';
+ctx.textAlign = 'right';
+ctx.textBaseline = 'bottom';
+ctx.fillText('O', O - 8, yMid - 6);
+ctx.textAlign = 'left'; // réinitialisation
+ctx.textBaseline = 'alphabetic';
+
+
+   // Graduations centrées autour de O et yMid
+ctx.fillStyle = 'black';
+ctx.font = '13px "Segoe UI", sans-serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'top';
+
+// ↔️ Axe horizontal (graduations en mm, centrées sur O)
+for (let dx = -O; dx <= O; dx += 50) {
+  const x = O + dx;
+  ctx.beginPath();
+  ctx.moveTo(x, yMid - 5);
+  ctx.lineTo(x, yMid + 5);
+  ctx.stroke();
+  ctx.fillText((dx / pxPerMm).toFixed(0), x, yMid + 8);
+}
+
+// ↕️ Axe vertical (graduations en cm, centrées sur yMid)
+ctx.textAlign = 'left';
+ctx.textBaseline = 'middle';
+for (let dy = -yMid; dy <= yMid; dy += 50) {
+  const y = yMid + dy;
+  if (Math.abs(dy) > 2) { // éviter de surcharger le 0
+    ctx.beginPath();
+    ctx.moveTo(O - 5, y);
+    ctx.lineTo(O + 5, y);
+    ctx.stroke();
+    ctx.fillText((-dy / 20).toFixed(1), O + 8, y);
+  }
+}
+
 
     // Lentille
     ctx.strokeStyle = "blue";
@@ -199,7 +276,6 @@
     ctx.moveTo(O, yMid - 100);
     ctx.lineTo(O, yMid + 100);
     ctx.stroke();
-
     ctx.beginPath();
     ctx.moveTo(O - 6, yMid - 95);
     ctx.lineTo(O, yMid - 100);
@@ -210,37 +286,47 @@
     ctx.stroke();
 
     // Foyers
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = '#009688';
     ctx.beginPath();
-    ctx.arc(F, yMid, 4, 0, 2 * Math.PI);
+    ctx.arc(F, yMid, 6, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.fillText('F', F - 5, yMid - 10);
+    ctx.fillStyle = 'black';
+    ctx.font = 'bold 14px Arial';
+    ctx.fillText('F', F - 10, yMid - 10);
 
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = '#e53935';
     ctx.beginPath();
-    ctx.arc(Fp, yMid, 4, 0, 2 * Math.PI);
+    ctx.arc(Fp, yMid, 6, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.fillText("F'", Fp - 5, yMid - 10);
+    ctx.fillStyle = 'black';
+    ctx.fillText("F'", Fp - 10, yMid - 10);
 
     // Flèche AB
-    ctx.strokeStyle = "orange";
+    ctx.strokeStyle = "#ff6600";
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(A, yMid);
     ctx.lineTo(A, yMid - B);
     ctx.stroke();
 
-    ctx.fillStyle = "orange";
+    ctx.fillStyle = "#ff6600";
     ctx.beginPath();
-    ctx.moveTo(A - 6, yMid - B + 12);
+    ctx.moveTo(A - 7, yMid - B + 14);
     ctx.lineTo(A, yMid - B);
-    ctx.lineTo(A + 6, yMid - B + 12);
-    ctx.closePath();
+    ctx.lineTo(A + 7, yMid - B + 14);
     ctx.fill();
 
     ctx.fillStyle = "black";
     ctx.fillText("A", A - 5, yMid + 15);
     ctx.fillText("B", A - 5, yMid - B - 15);
     ctx.fillText((B / 20).toFixed(1) + " cm", A + 10, yMid - B / 2);
+
+    // Légende
+    ctx.fillStyle = '#000';
+    ctx.font = '13px "Segoe UI", sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('🗘 2 carreaux = 25 mm', canvas.width - 10, 20);
+    ctx.textAlign = 'left';
 
     // Tracés
     lines.forEach(line => {
@@ -304,6 +390,5 @@
   resizeCanvas();
 </script>
 
-</body>
+  </body>
 </html>
-
